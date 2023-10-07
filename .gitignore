@@ -1,0 +1,184 @@
+## ASP.NET Core
+wwwroot/lib/
+
+## .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+bin/
+obj/
+out/
+*.sln.cache
+*.cache
+*.user
+*.lock
+*.vscode/
+*.idea/
+Dockerfile.*.dockerignore
+*.*proj.user
+*.*proj.local
+
+## Rider
+.idea/
+
+## Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+## Folder config file
+Desktop.ini
+
+## Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+## VS Code directories
+.vscode/
+
+## Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+## Windows shortcuts
+*.lnk
+
+## JetBrains Rider
+.idea/
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Visual Studio for Mac
+.vscode/
+.vscode/
+
+## Rider
+.idea/
+
+## Tye
+.tye/
+
+## Visual Studio for Windows
+*.dbmdl
+*.dbproj.schemaview
+*.pfx
+*.publishsettings
+node_modules/
+orleans.codegen.cs
+
+## Common Node.js modules
+node_modules/
+npm-debug.log
+
+## Windows image file caches
+NTUSER.dat*
+ntuser.dat*
+ntuser.ini
+
+## Windows old directory
+windows.old/
+
+## Logs
+logs/
+*.log
+*.log.*
+*.log.*
+*.log.*
+
+## Uncomment if you have tasks that create the project's static files in wwwroot
+#wwwroot/
+
+## ASP.NET Core Identity
+wwwroot/identity/
+
+## Uncomment if your project uses IIS
+#Properties/PublishProfiles/
+
+## Rider
+.idea/
+
+## User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+## Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+## Folder config file
+Desktop.ini
+
+## Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+## VS Code directories
+.vscode/
+
+## Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+## Windows shortcuts
+*.lnk
+
+## JetBrains Rider
+.idea/
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
+
+## .NET 5
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+## Tye
+.tye/
+
+## Visual Studio for Mac
+.vscode/
+.vscode/
+
+## Rider
+.idea/
+
+## Windows image file caches
+Thumbs.db
+ehthumbs.db
+
+## Folder config file
+Desktop.ini
+
+## Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+## VS Code directories
+.vscode/
+
+## Windows Installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+## Windows shortcuts
+*.lnk
+
+## JetBrains Rider
+.idea/
+
+## ASP.NET Scaffolding
+ScaffoldingReadMe.txt
