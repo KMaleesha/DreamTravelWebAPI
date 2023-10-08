@@ -19,6 +19,7 @@ builder.Services.Configure<JwtSettings>(jwtSettings);
 
 builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<ITravelerService, TravelerService>();
+builder.Services.AddSingleton<IBookingService, BookingService>();
 
 // Add CORS service
 builder.Services.AddCors(options =>

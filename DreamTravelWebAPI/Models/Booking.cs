@@ -1,6 +1,6 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
+using System;
 
 namespace DreamTravelWebAPI.Models
 {
@@ -8,22 +8,21 @@ namespace DreamTravelWebAPI.Models
     {
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        public string Id { get; set; }
         public string BookingID { get; set; }
-
         public string NIC { get; set; }  // NIC of the traveler making the booking
-
         public string TrainID { get; set; }  // Identifier for the train being booked
+        public DateTime ReservationDate { get; set; }
+        public DateTime BookingDate { get; set; }
 
-        public DateTime ReservationDate { get; set; }  // The date the traveler is reserving for
-
-        public enum BookingStatus
+        public enum StatusType
         {
-            Active,
-            Cancelled,
+            Reserved,
+            Canceled
             // ... any other statuses you might have
         }
 
-        public BookingStatus Status { get; set; }
+        public StatusType Status { get; set; }
+        public string ReferenceID { get; set; }
     }
-
 }
