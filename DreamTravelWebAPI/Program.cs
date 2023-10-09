@@ -21,6 +21,11 @@ builder.Services.AddSingleton<IUserService, UserService>();
 builder.Services.AddSingleton<ITravelerService, TravelerService>();
 builder.Services.AddSingleton<IBookingService, BookingService>();
 
+// Configure services
+builder.Services.AddControllers();
+builder.Services.AddTransient<ITrainService, TrainService>();
+builder.Services.AddTransient<IScheduleService, ScheduleService>();
+
 // Add CORS service
 builder.Services.AddCors(options =>
 {
