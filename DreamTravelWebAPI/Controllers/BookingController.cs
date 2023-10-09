@@ -2,6 +2,7 @@
 using DreamTravelWebAPI.Models;
 using DreamTravelWebAPI.Services;
 using System;
+using Microsoft.AspNetCore.Authorization;
 
 namespace DreamTravelWebAPI.Controllers
 {

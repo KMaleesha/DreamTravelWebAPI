@@ -47,6 +47,12 @@ namespace DreamTravelWebAPI.Controllers
         }
 
 
+        [HttpGet]
+        public IActionResult GetAllUsers()
+        {
+            var users = _userService.GetAll();
+            return Ok(users);
+        }
 
         // Authenticate the user and return a JWT
         [AllowAnonymous]
