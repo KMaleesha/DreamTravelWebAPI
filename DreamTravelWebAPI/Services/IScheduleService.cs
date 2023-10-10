@@ -8,4 +8,5 @@ public interface IScheduleService
     IEnumerable<Schedule> GetSchedulesByTrainId(string trainId);
     bool UpdateExistingTrainSchedule(int scheduleId, Schedule updatedSchedule);
     bool CancelTrainReservation(int scheduleId);
+    IEnumerable<Schedule> GetAllSchedules();
 }

@@ -8,6 +8,6 @@ public class Train
     public string Name { get; set; }
     public bool IsActive { get; set; }
     public bool IsPublished { get; set; }
-    public List<Schedule> Schedules { get; set; } // List of schedules for the train
+   // public List<Schedule> Schedules { get; set; } // List of schedules for the train
 }
 

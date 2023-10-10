@@ -80,6 +80,20 @@ namespace DreamTravelWebAPI.Controllers
             }
         }
 
+        [HttpGet]
+        public IActionResult GetAllSchedules()
+        {
+            try
+            {
+                var schedules = _scheduleService.GetAllSchedules();
+                return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
         [HttpDelete("{scheduleId}")]
         public IActionResult CancelTrainReservation(int scheduleId)
         {

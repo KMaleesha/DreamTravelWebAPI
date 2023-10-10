@@ -91,4 +91,9 @@ public class ScheduleService : IScheduleService
 
         return false; // Placeholder
     }
+
+    public IEnumerable<Schedule> GetAllSchedules()
+    {
+        return _schedules.Find(_ => true).ToList();
+    }
 }
