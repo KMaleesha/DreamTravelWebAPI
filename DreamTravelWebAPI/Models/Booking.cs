@@ -14,15 +14,16 @@ namespace DreamTravelWebAPI.Models
         public string TrainID { get; set; }  // Identifier for the train being booked
         public DateTime ReservationDate { get; set; }
         public DateTime BookingDate { get; set; }
-
+        public string ReferenceID { get; set; }
         public enum StatusType
         {
             Reserved,
             Canceled
             // ... any other statuses you might have
         }
-
-        public StatusType Status { get; set; }
-        public string ReferenceID { get; set; }
+        [BsonElement("Status")]
+        [System.ComponentModel.Description("Status of the booking. Either 'Reserved' or 'Canceled'.")]
+        public Booking.StatusType Status { get; set; }
+ 
     }
 }
