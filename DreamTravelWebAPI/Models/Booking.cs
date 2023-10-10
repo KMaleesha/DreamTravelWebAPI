@@ -10,6 +10,9 @@ namespace DreamTravelWebAPI.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string Id { get; set; }
         public string BookingID { get; set; }
+
+        public string ScheduleID { get; set; }
+        public int SeatCount { get; set; }
         public string NIC { get; set; }  // NIC of the traveler making the booking
         public string TrainID { get; set; }  // Identifier for the train being booked
         public DateTime ReservationDate { get; set; }
