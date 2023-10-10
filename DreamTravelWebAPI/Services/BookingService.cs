@@ -20,6 +20,9 @@ namespace DreamTravelWebAPI.Services
         public List<Booking> GetAll() => _bookings.Find(booking => true).ToList();
 
         public Booking GetByBookingID(string bookingID) => _bookings.Find<Booking>(booking => booking.BookingID == bookingID).FirstOrDefault();
+        // public List<Booking> GetByNIC(string NIC) => _bookings.Find<Booking>(booking => booking.NIC == NIC).ToList();
+        public IEnumerable<Booking> GetByNIC(string NIC) => _bookings.Find<Booking>(booking => booking.NIC == NIC).ToList();
+
 
         public Booking Create(Booking booking)
         {
@@ -29,18 +32,38 @@ namespace DreamTravelWebAPI.Services
 
         public void Update(string bookingID, Booking bookingIn)
         {
-            _bookings.ReplaceOne(booking => booking.BookingID == bookingID, bookingIn);
+            var originalBooking = GetByBookingID(bookingID);
+            if (originalBooking == null)
+            {
+                throw new Exception("Booking not found.");
+            }
+
+            bookingIn.Id = originalBooking.Id; // Ensure ObjectId consistency
+
+            var filter = Builders<Booking>.Filter.Eq("BookingID", bookingID);
+            _bookings.ReplaceOne(filter, bookingIn);
         }
+
 
         public void UpdateStatus(string bookingID, Booking.StatusType status)
         {
-            var booking = GetByBookingID(bookingID) ?? throw new Exception("Booking not found.");
+            var booking = GetByBookingID(bookingID);
             booking.Status = status;
             Update(bookingID, booking);
         }
 
-        public void Delete(string bookingID) => _bookings.DeleteOne(booking => booking.BookingID == bookingID);
+        public void Delete(string bookingID)
+        {
+            var originalBooking = GetByBookingID(bookingID);
+            var filter = Builders<Booking>.Filter.Eq("Id", originalBooking.Id);
+            _bookings.DeleteOne(filter);
+        }
 
-        public bool Exists(string bookingID) => _bookings.CountDocuments(booking => booking.BookingID == bookingID) > 0;
+
+        public bool Exists(string bookingID)
+        {
+            var filter = Builders<Booking>.Filter.Eq("BookingID", bookingID);
+            return _bookings.CountDocuments(filter) > 0;
+        }
     }
 }
