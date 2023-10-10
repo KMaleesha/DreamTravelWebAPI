@@ -1,17 +1,13 @@
-﻿using MongoDB.Bson;
-using MongoDB.Bson.Serialization.Attributes;
-using MongoDB.Driver;
+﻿using MongoDB.Bson.Serialization.Attributes;
+using MongoDB.Bson;
+using DreamTravelWebAPI.Models;
 
-namespace DreamTravelWebAPI.Models
+public class Train
 {
-    public class Train
-    {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public bool IsActive { get; set; }
-        public bool IsPublished { get; set; }
-    }
-
+    public String Id { get; set; }
+    public string Name { get; set; }
+    public bool IsActive { get; set; }
+    public bool IsPublished { get; set; }
+    public List<Schedule> Schedules { get; set; } // List of schedules for the train
 }
+
