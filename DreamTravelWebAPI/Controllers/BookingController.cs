@@ -60,11 +60,11 @@ namespace DreamTravelWebAPI.Controllers
 
         // PATCH: api/Bookings/{bookingID}/status
         [HttpPatch("{bookingID}/status")]
-        public IActionResult UpdateBookingStatus(string bookingID, [FromBody] Booking.StatusType status)
+        public IActionResult UpdateBookingStatus(string bookingID, [FromBody] Booking statusUpdate)
         {
             try
             {
-                _bookingService.UpdateStatus(bookingID, status);
+                _bookingService.UpdateStatus(bookingID, statusUpdate.Status);
                 return Ok("Booking status updated successfully");
             }
             catch (Exception ex)
