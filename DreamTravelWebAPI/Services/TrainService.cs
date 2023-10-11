@@ -17,6 +17,7 @@ namespace DreamTravelWebAPI.Services
             _trains = database.GetCollection<Train>("Trains");
             _bookingService = bookingService;
         }
+        public bool Exists(string id) => _trains.CountDocuments(train => train.Id == id) > 0;
 
         public List<Train> GetAll() => _trains.Find(train => true).ToList();
 
@@ -24,6 +25,11 @@ namespace DreamTravelWebAPI.Services
 
         public Train Create(Train train)
         {
+            if (Exists(train.Id))
+            {
+                throw new InvalidOperationException("A train with the same ID already exists.");
+            }
+
             _trains.InsertOne(train);
             return train;
         }
@@ -64,8 +70,6 @@ namespace DreamTravelWebAPI.Services
         }
 
         public void Delete(string id) => _trains.DeleteOne(train => train.Id == id);
-
-        public bool Exists(string id) => _trains.CountDocuments(train => train.Id == id) > 0;
 
         public Train CreateTrain(Train train)
         {

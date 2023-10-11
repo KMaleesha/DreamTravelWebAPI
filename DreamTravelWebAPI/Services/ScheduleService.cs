@@ -19,16 +19,34 @@ public class ScheduleService : IScheduleService
 
     public Schedule CreateScheduleWithTrainDetails(string trainId, Schedule schedule)
     {
+        // Check for existing schedule with the same ID
+        var existingSchedule = _schedules.Find(s => s.Id == schedule.Id).FirstOrDefault();
+        if (existingSchedule != null)
+        {
+            throw new ArgumentException($"A schedule with the ID {schedule.Id} already exists.");
+        }
+
         var train = _trains.Find(t => t.Id == trainId && t.IsPublished).FirstOrDefault();
         if (train == null)
         {
             throw new Exception("Train not found or not eligible for scheduling.");
         }
 
+        if (string.IsNullOrEmpty(schedule.DepartureTime) ||
+            string.IsNullOrEmpty(schedule.ArrivalTime) ||
+            string.IsNullOrEmpty(schedule.StartStation) ||
+            string.IsNullOrEmpty(schedule.StoppingStation) ||
+            schedule.Train == null)
+        {
+            throw new ArgumentException("All fields of the schedule must be provided.");
+        }
+
         schedule.Train = train;
         _schedules.InsertOne(schedule);
         return schedule;
     }
+
+
 
     public Schedule GetScheduleById(int scheduleId)
     {
