@@ -71,7 +71,7 @@ namespace DreamTravelWebAPI.Controllers
 
         // PATCH: api/Bookings/{bookingID}/status
         [HttpPatch("{bookingID}/status")]
-        public IActionResult UpdateBookingStatus(string bookingID, [FromBody] Booking statusUpdate)
+        public IActionResult UpdateBookingStatus(string bookingID, [FromBody] BookingStatusUpdateDTO statusUpdate)
         {
             try
             {
@@ -83,6 +83,7 @@ namespace DreamTravelWebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         // DELETE: api/Bookings/{bookingID}
         [HttpDelete("{bookingID}")]
