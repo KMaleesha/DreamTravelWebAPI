@@ -19,7 +19,6 @@ public class ScheduleService : IScheduleService
 
     public Schedule CreateScheduleWithTrainDetails(string trainId, Schedule schedule)
     {
-        // Check for existing schedule with the same ID
         var existingSchedule = _schedules.Find(s => s.Id == schedule.Id).FirstOrDefault();
         if (existingSchedule != null)
         {
@@ -46,8 +45,6 @@ public class ScheduleService : IScheduleService
         return schedule;
     }
 
-
-
     public Schedule GetScheduleById(int scheduleId)
     {
         return _schedules.Find(s => s.Id == scheduleId).FirstOrDefault();
@@ -66,7 +63,6 @@ public class ScheduleService : IScheduleService
             throw new Exception("Schedule not found.");
         }
 
-        // Check if the updated schedule is valid (e.g., train is published)
         var train = _trains.Find(t => t.Id == existingSchedule.Train.Id && t.IsPublished).FirstOrDefault();
         if (train == null)
         {
@@ -88,7 +84,6 @@ public class ScheduleService : IScheduleService
             throw new Exception("Schedule not found.");
         }
 
-        // Check if there are existing reservations (implement your logic here)
         if (HasExistingReservations(schedule))
         {
             throw new Exception("Cannot cancel a train with existing reservations.");
@@ -97,7 +92,7 @@ public class ScheduleService : IScheduleService
         // Implement your cancellation logic here
         // ...
 
-        return true; // Placeholder
+        return true; 
     }
 
     // Helper method to check for existing reservations

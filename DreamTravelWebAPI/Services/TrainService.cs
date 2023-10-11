@@ -71,16 +71,6 @@ namespace DreamTravelWebAPI.Services
 
         public void Delete(string id) => _trains.DeleteOne(train => train.Id == id);
 
-        public Train CreateTrain(Train train)
-        {
-            if (train.IsPublished)
-            {
-                _trains.InsertOne(train);
-                return train;
-            }
-            throw new InvalidOperationException("Train can only be created if it is published.");
-        }
-
         public List<Train> GetByIsPublished(bool isPublished)
         {
             return _trains.Find(train => train.IsPublished == isPublished).ToList();

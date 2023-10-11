@@ -29,7 +29,7 @@ public class TrainsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { error = ex.Message });
+            return StatusCode(500, new { error = "Cannot create successful.", details = ex.Message });
         }
     }
 
@@ -44,7 +44,7 @@ public class TrainsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { error = ex.Message });
+            return StatusCode(500, new { error = "Update train by ID was unsuccessful.", details = ex.Message });
         }
     }
 
@@ -58,7 +58,7 @@ public class TrainsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { error = ex.Message });
+            return StatusCode(500, new { error = "Cannot Delete the record.", details = ex.Message });
         }
     }
 
@@ -73,7 +73,7 @@ public class TrainsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { error = ex.Message });
+            return StatusCode(500, new { error = "Fetching trains were unsuccessful.", details = ex.Message });
         }
     }
 
@@ -87,7 +87,7 @@ public class TrainsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { error = ex.Message });
+            return StatusCode(500, new { error = "Fetching train by published status was unsuccessful.", details = ex.Message });
         }
     }
 
@@ -101,7 +101,7 @@ public class TrainsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { error = ex.Message });
+            return StatusCode(500, new { error = "Train de-activation was unsuccessful.", details = ex.Message });
         }
     }
 
@@ -116,21 +116,26 @@ public class TrainsController : ControllerBase
         }
         catch (Exception ex)
         {
-            return StatusCode(500, new { error = ex.Message });
+            return StatusCode(500, new { error = "Train activation was unsuccessful.", details = ex.Message });
         }
     }
 
-    [HttpGet("{id}")]
-    public IActionResult GetById(String id)
+[HttpGet("{id}")]
+public IActionResult GetById(String id)
+{
+    try
     {
-        try
+        var result = _trainService.GetById(id);
+        if (result == null)
         {
-            var result = _trainService.GetById(id);
-            return Ok(result);
+            return NotFound(new { message = "Train not found." });
         }
-        catch (Exception ex)
-        {
-            return StatusCode(500, new { error = ex.Message });
-        }
+        return Ok(result);
     }
+    catch (Exception ex)
+    {
+        return StatusCode(500, new { error = "Fetching train by ID was unsuccessful.", details = ex.Message });
+    }
+}
+
 }
