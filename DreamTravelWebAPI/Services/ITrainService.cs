@@ -11,7 +11,7 @@ namespace DreamTravelWebAPI.Services
         void Update(string id, Train train);
         void Delete(string id);
         bool Exists(string id);
-        void Activate(string id);
-        void Deactivate(string id);
+        List<Train> GetByIsPublished(bool isPublished);
+
     }
 }

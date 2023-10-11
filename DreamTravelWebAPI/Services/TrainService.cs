@@ -35,44 +35,20 @@ namespace DreamTravelWebAPI.Services
 
         public bool Exists(string id) => _trains.CountDocuments(train => train.Id == id) > 0;
 
-        public void Activate(string id)
-        {
-            var train = GetById(id) ?? throw new Exception("Train not found.");
-            if (train.IsActive)
-            {
-                throw new Exception("Train is already activated.");
-            }
-
-            train.IsActive = true;
-            Update(id, train);
-        }
-
-        public void Deactivate(string id)
-        {
-            var train = GetById(id);
-            if (train == null)
-            {
-                throw new Exception("Train not found.");
-            }
-            if (!train.IsActive)
-            {
-                throw new Exception("Train is already deactivated.");
-            }
-            train.IsActive = false;
-            Update(id, train);
-        }
-
         public Train CreateTrain(Train train)
         {
-            // Check if the train is active and published before creating it
-            if (train.IsActive && train.IsPublished)
+            if (train.IsPublished)
             {
-                _trains.InsertOne(train); // Insert the train into the MongoDB collection
+                _trains.InsertOne(train);
                 return train;
             }
-            throw new InvalidOperationException("Train can only be created if it is active and published.");
+            throw new InvalidOperationException("Train can only be created if it is published.");
         }
 
+        public List<Train> GetByIsPublished(bool isPublished)
+        {
+            return _trains.Find(train => train.IsPublished == isPublished).ToList();
+        }
 
         public Train GetTrainById(string trainId)
         {
