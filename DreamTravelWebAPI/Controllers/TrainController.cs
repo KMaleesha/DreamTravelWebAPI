@@ -84,6 +84,20 @@ public IActionResult Delete(string id)
         }
     }
 
+    [HttpPatch("{id}/deactivate")]
+    public IActionResult DeactivateTrain(string id)
+    {
+        try
+        {
+            _trainService.DeactivateTrain(id);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpGet("{id}")]
     public IActionResult GetById(String id)
     {
