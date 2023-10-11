@@ -8,12 +8,14 @@ namespace DreamTravelWebAPI.Services
     public class TrainService : ITrainService
     {
         private readonly IMongoCollection<Train> _trains;
+        private readonly IBookingService _bookingService;
 
-        public TrainService(MongoDBSettings settings)
+        public TrainService(MongoDBSettings settings, IBookingService bookingService)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
             _trains = database.GetCollection<Train>("Trains");
+            _bookingService = bookingService;
         }
 
         public List<Train> GetAll() => _trains.Find(train => true).ToList();
@@ -24,6 +26,24 @@ namespace DreamTravelWebAPI.Services
         {
             _trains.InsertOne(train);
             return train;
+        }
+
+        public void DeactivateTrain(string trainId)
+        {
+            var reservations = _bookingService.GetBookingsForTrain(trainId);
+            if (reservations.Count > 0)
+            {
+                throw new InvalidOperationException("Cannot deactivate the train as there are active reservations.");
+            }
+
+            var train = GetById(trainId);
+            if (train == null)
+            {
+                throw new Exception("Train not found.");
+            }
+
+            train.IsPublished = false;
+            Update(trainId, train);
         }
 
         public void Update(string id, Train trainIn)

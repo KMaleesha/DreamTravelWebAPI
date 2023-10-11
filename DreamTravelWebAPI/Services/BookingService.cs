@@ -23,6 +23,10 @@ namespace DreamTravelWebAPI.Services
         // public List<Booking> GetByNIC(string NIC) => _bookings.Find<Booking>(booking => booking.NIC == NIC).ToList();
         public IEnumerable<Booking> GetByNIC(string NIC) => _bookings.Find<Booking>(booking => booking.NIC == NIC).ToList();
 
+        public List<Booking> GetBookingsForTrain(string trainId)
+        {
+            return _bookings.Find(booking => booking.TrainID == trainId && booking.Status == Booking.StatusType.Reserved).ToList();
+        }
 
         public Booking Create(Booking booking)
         {

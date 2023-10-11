@@ -13,5 +13,6 @@ namespace DreamTravelWebAPI.Services
         void UpdateStatus(string bookingID, Booking.StatusType status);
         void Delete(string bookingID);
         bool Exists(string bookingID);
+        List<Booking> GetBookingsForTrain(string trainId);
     }
 }

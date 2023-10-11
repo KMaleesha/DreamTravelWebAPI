@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using DreamTravelWebAPI.Models;
 
 namespace DreamTravelWebAPI.Services
 {
@@ -12,6 +12,8 @@ namespace DreamTravelWebAPI.Services
         void Delete(string id);
         bool Exists(string id);
         List<Train> GetByIsPublished(bool isPublished);
-
+        Train CreateTrain(Train train);
+        Train GetTrainById(string trainId);
+        void DeactivateTrain(string trainId);
     }
 }
