@@ -52,9 +52,14 @@ namespace DreamTravelWebAPI.Services
         public void UpdateStatus(string bookingID, Booking.StatusType status)
         {
             var booking = GetByBookingID(bookingID);
+            if (booking == null)
+            {
+                throw new Exception($"Booking with ID {bookingID} not found.");
+            }
             booking.Status = status;
             Update(bookingID, booking);
         }
+
 
         public void Delete(string bookingID)
         {
