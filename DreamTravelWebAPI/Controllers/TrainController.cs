@@ -1,4 +1,6 @@
-﻿using DreamTravelWebAPI.Models;
+﻿using System;  // Added this line
+using DreamTravelWebAPI.Models;
+using DreamTravelWebAPI.Services;
 using Microsoft.AspNetCore.Mvc;
 
 [Route("api/[controller]")]
@@ -25,14 +27,13 @@ public class TrainsController : ControllerBase
             return BadRequest(ex.Message);
         }
     }
-
     [HttpPut("{id}")]
-    public IActionResult Update(int id, Train updatedTrain)
+    public IActionResult Update(String id, Train updatedTrain)
     {
         try
         {
-            var result = _trainService.Update(id, updatedTrain);
-            return Ok(result);
+            _trainService.Update(id, updatedTrain);
+            return Ok();  // Just return an Ok without a result since Update is void
         }
         catch (Exception ex)
         {
@@ -40,19 +41,20 @@ public class TrainsController : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
-    public IActionResult Delete(int id)
+[HttpDelete("{id}")]
+public IActionResult Delete(string id)
+{
+    try
     {
-        try
-        {
-            var result = _trainService.Delete(id);
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        _trainService.Delete(id);
+        return Ok();
     }
+    catch (Exception ex)
+    {
+        return BadRequest(ex.Message);
+    }
+}
+
 
     [HttpGet]
     public IActionResult GetAll()
@@ -68,8 +70,22 @@ public class TrainsController : ControllerBase
         }
     }
 
+    [HttpGet("published/{status}")]
+    public IActionResult GetByIsPublished(bool status)
+    {
+        try
+        {
+            var result = _trainService.GetByIsPublished(status);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpGet("{id}")]
-    public IActionResult GetById(int id)
+    public IActionResult GetById(String id)
     {
         try
         {

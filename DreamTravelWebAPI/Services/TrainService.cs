@@ -1,65 +1,59 @@
-﻿using DreamTravelWebAPI.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using MongoDB.Driver;
+using DreamTravelWebAPI.Models;
 
-public class TrainService : ITrainService
+namespace DreamTravelWebAPI.Services
 {
-    private static List<Train> trains = new List<Train>();
-
-    public Train Create(Train train)
+    public class TrainService : ITrainService
     {
-        trains.Add(train);
-        return train;
-    }
+        private readonly IMongoCollection<Train> _trains;
 
-    public Train Update(int id, Train updatedTrain)
-    {
-        var train = trains.FirstOrDefault(t => t.Id == id);
-        if (train == null)
+        public TrainService(MongoDBSettings settings)
         {
-            throw new Exception($"Train with id {id} not found.");
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
+            _trains = database.GetCollection<Train>("Trains");
         }
 
-        if (!train.IsPublished)
+        public List<Train> GetAll() => _trains.Find(train => true).ToList();
+
+        public Train GetById(string id) => _trains.Find<Train>(train => train.Id == id).FirstOrDefault();
+
+        public Train Create(Train train)
         {
-            train.Name = updatedTrain.Name;
+            _trains.InsertOne(train);
             return train;
         }
 
-        throw new Exception("Cannot update a published train.");
-    }
-
-    public bool Delete(int id)
-    {
-        var train = trains.FirstOrDefault(t => t.Id == id);
-        if (train == null)
+        public void Update(string id, Train trainIn)
         {
-            throw new Exception($"Train with id {id} not found.");
+            _trains.ReplaceOne(train => train.Id == id, trainIn);
         }
 
-        if (!train.IsPublished)
+        public void Delete(string id) => _trains.DeleteOne(train => train.Id == id);
+
+        public bool Exists(string id) => _trains.CountDocuments(train => train.Id == id) > 0;
+
+        public Train CreateTrain(Train train)
         {
-            trains.Remove(train);
-            return true;
+            if (train.IsPublished)
+            {
+                _trains.InsertOne(train);
+                return train;
+            }
+            throw new InvalidOperationException("Train can only be created if it is published.");
         }
 
-        throw new Exception("Cannot delete a train with reservations or if it's published.");
-    }
-
-    public IEnumerable<Train> GetAll()
-    {
-        return trains;
-    }
-
-    public Train GetById(int id)
-    {
-        var train = trains.FirstOrDefault(t => t.Id == id);
-        if (train == null)
+        public List<Train> GetByIsPublished(bool isPublished)
         {
-            throw new Exception($"Train with id {id} not found.");
+            return _trains.Find(train => train.IsPublished == isPublished).ToList();
         }
 
-        return train;
+        public Train GetTrainById(string trainId)
+        {
+            var filter = Builders<Train>.Filter.Eq(train => train.Id, trainId);
+            return _trains.Find(filter).FirstOrDefault();
+        }
     }
 }

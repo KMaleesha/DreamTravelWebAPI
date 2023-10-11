@@ -1,12 +1,17 @@
-﻿using DreamTravelWebAPI.Models;
+﻿using System;
 using System.Collections.Generic;
 
-public interface ITrainService
+namespace DreamTravelWebAPI.Services
 {
-    Train Create(Train train);
-    Train Update(int id, Train updatedTrain);
-    bool Delete(int id);
-    IEnumerable<Train> GetAll();
-    Train GetById(int id);
-}
+    public interface ITrainService
+    {
+        List<Train> GetAll();
+        Train GetById(string id);
+        Train Create(Train train);
+        void Update(string id, Train train);
+        void Delete(string id);
+        bool Exists(string id);
+        List<Train> GetByIsPublished(bool isPublished);
 
+    }
+}
