@@ -98,6 +98,20 @@ public IActionResult Delete(string id)
         }
     }
 
+    [HttpPatch("{trainId}/activate")]
+    public IActionResult Activate(string trainId)
+    {
+        try
+        {
+            _trainService.ActiveTrain(trainId);
+            return Ok(new { message = "Train activated successfully." });
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpGet("{id}")]
     public IActionResult GetById(String id)
     {
