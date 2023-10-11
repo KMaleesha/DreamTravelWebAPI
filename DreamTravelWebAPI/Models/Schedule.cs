@@ -9,10 +9,7 @@ namespace DreamTravelWebAPI.Models
         public DateTime ArrivalTime { get; set; }
         public string StartStation { get; set; }
         public string StoppingStation { get; set; }
-        public int AvailableCount { get; set; }
-        public int ReservationCount { get; set; }
-        public Train Train { get; set; } // Reference to the Train details
+        public Train Train { get; set; } 
 
-        // Constructors, additional properties, and methods can be added here.
     }
 }

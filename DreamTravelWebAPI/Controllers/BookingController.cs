@@ -3,6 +3,7 @@ using DreamTravelWebAPI.Models;
 using DreamTravelWebAPI.Services;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace DreamTravelWebAPI.Controllers
 {
@@ -35,6 +36,16 @@ namespace DreamTravelWebAPI.Controllers
             return Ok(booking);
         }
 
+        // GET: api/Bookings/{nic}
+        [HttpGet("nic/{nic}")]
+        public IActionResult GetBookingByNic(string nic)
+        {
+            var bookings = _bookingService.GetByNIC(nic);
+            if (!bookings.Any())
+                return NotFound("Booking not found");
+            return Ok(bookings);
+        }
+
         // POST: api/Bookings
         [HttpPost]
         public IActionResult CreateBooking([FromBody] Booking booking)
@@ -60,7 +71,7 @@ namespace DreamTravelWebAPI.Controllers
 
         // PATCH: api/Bookings/{bookingID}/status
         [HttpPatch("{bookingID}/status")]
-        public IActionResult UpdateBookingStatus(string bookingID, [FromBody] Booking statusUpdate)
+        public IActionResult UpdateBookingStatus(string bookingID, [FromBody] BookingStatusUpdateDTO statusUpdate)
         {
             try
             {
@@ -72,6 +83,7 @@ namespace DreamTravelWebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         // DELETE: api/Bookings/{bookingID}
         [HttpDelete("{bookingID}")]

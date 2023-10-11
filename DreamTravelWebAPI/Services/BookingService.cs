@@ -20,7 +20,13 @@ namespace DreamTravelWebAPI.Services
         public List<Booking> GetAll() => _bookings.Find(booking => true).ToList();
 
         public Booking GetByBookingID(string bookingID) => _bookings.Find<Booking>(booking => booking.BookingID == bookingID).FirstOrDefault();
+        // public List<Booking> GetByNIC(string NIC) => _bookings.Find<Booking>(booking => booking.NIC == NIC).ToList();
+        public IEnumerable<Booking> GetByNIC(string NIC) => _bookings.Find<Booking>(booking => booking.NIC == NIC).ToList();
 
+        public List<Booking> GetBookingsForTrain(string trainId)
+        {
+            return _bookings.Find(booking => booking.TrainID == trainId && booking.Status == Booking.StatusType.Reserved).ToList();
+        }
 
         public Booking Create(Booking booking)
         {
@@ -46,9 +52,14 @@ namespace DreamTravelWebAPI.Services
         public void UpdateStatus(string bookingID, Booking.StatusType status)
         {
             var booking = GetByBookingID(bookingID);
+            if (booking == null)
+            {
+                throw new Exception($"Booking with ID {bookingID} not found.");
+            }
             booking.Status = status;
             Update(bookingID, booking);
         }
+
 
         public void Delete(string bookingID)
         {

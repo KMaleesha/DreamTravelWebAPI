@@ -8,12 +8,14 @@ namespace DreamTravelWebAPI.Services
     public class TrainService : ITrainService
     {
         private readonly IMongoCollection<Train> _trains;
+        private readonly IBookingService _bookingService;
 
-        public TrainService(MongoDBSettings settings)
+        public TrainService(MongoDBSettings settings, IBookingService bookingService)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
             _trains = database.GetCollection<Train>("Trains");
+            _bookingService = bookingService;
         }
 
         public List<Train> GetAll() => _trains.Find(train => true).ToList();
@@ -26,6 +28,24 @@ namespace DreamTravelWebAPI.Services
             return train;
         }
 
+        public void DeactivateTrain(string trainId)
+        {
+            var reservations = _bookingService.GetBookingsForTrain(trainId);
+            if (reservations.Count > 0)
+            {
+                throw new InvalidOperationException("Cannot deactivate the train as there are active reservations.");
+            }
+
+            var train = GetById(trainId);
+            if (train == null)
+            {
+                throw new Exception("Train not found.");
+            }
+
+            train.IsPublished = false;
+            Update(trainId, train);
+        }
+
         public void Update(string id, Train trainIn)
         {
             _trains.ReplaceOne(train => train.Id == id, trainIn);
@@ -35,44 +55,20 @@ namespace DreamTravelWebAPI.Services
 
         public bool Exists(string id) => _trains.CountDocuments(train => train.Id == id) > 0;
 
-        public void Activate(string id)
-        {
-            var train = GetById(id) ?? throw new Exception("Train not found.");
-            if (train.IsActive)
-            {
-                throw new Exception("Train is already activated.");
-            }
-
-            train.IsActive = true;
-            Update(id, train);
-        }
-
-        public void Deactivate(string id)
-        {
-            var train = GetById(id);
-            if (train == null)
-            {
-                throw new Exception("Train not found.");
-            }
-            if (!train.IsActive)
-            {
-                throw new Exception("Train is already deactivated.");
-            }
-            train.IsActive = false;
-            Update(id, train);
-        }
-
         public Train CreateTrain(Train train)
         {
-            // Check if the train is active and published before creating it
-            if (train.IsActive && train.IsPublished)
+            if (train.IsPublished)
             {
-                _trains.InsertOne(train); // Insert the train into the MongoDB collection
+                _trains.InsertOne(train);
                 return train;
             }
-            throw new InvalidOperationException("Train can only be created if it is active and published.");
+            throw new InvalidOperationException("Train can only be created if it is published.");
         }
 
+        public List<Train> GetByIsPublished(bool isPublished)
+        {
+            return _trains.Find(train => train.IsPublished == isPublished).ToList();
+        }
 
         public Train GetTrainById(string trainId)
         {

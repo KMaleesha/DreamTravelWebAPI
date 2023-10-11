@@ -19,7 +19,7 @@ public class ScheduleService : IScheduleService
 
     public Schedule CreateScheduleWithTrainDetails(string trainId, Schedule schedule)
     {
-        var train = _trains.Find(t => t.Id == trainId && t.IsActive && t.IsPublished).FirstOrDefault();
+        var train = _trains.Find(t => t.Id == trainId && t.IsPublished).FirstOrDefault();
         if (train == null)
         {
             throw new Exception("Train not found or not eligible for scheduling.");
@@ -48,8 +48,8 @@ public class ScheduleService : IScheduleService
             throw new Exception("Schedule not found.");
         }
 
-        // Check if the updated schedule is valid (e.g., train is active and published)
-        var train = _trains.Find(t => t.Id == existingSchedule.Train.Id && t.IsActive && t.IsPublished).FirstOrDefault();
+        // Check if the updated schedule is valid (e.g., train is published)
+        var train = _trains.Find(t => t.Id == existingSchedule.Train.Id && t.IsPublished).FirstOrDefault();
         if (train == null)
         {
             throw new Exception("Train not found or not eligible for scheduling.");

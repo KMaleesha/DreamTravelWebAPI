@@ -70,6 +70,34 @@ public IActionResult Delete(string id)
         }
     }
 
+    [HttpGet("published/{status}")]
+    public IActionResult GetByIsPublished(bool status)
+    {
+        try
+        {
+            var result = _trainService.GetByIsPublished(status);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPatch("{id}/deactivate")]
+    public IActionResult DeactivateTrain(string id)
+    {
+        try
+        {
+            _trainService.DeactivateTrain(id);
+            return Ok();
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
     [HttpGet("{id}")]
     public IActionResult GetById(String id)
     {

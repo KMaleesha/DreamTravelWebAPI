@@ -16,6 +16,7 @@ namespace DreamTravelWebAPI.Controllers
             _scheduleService = scheduleService;
         }
 
+
         [HttpPost("{trainId}")]
         public IActionResult CreateScheduleWithTrainDetails(string trainId, [FromBody] Schedule schedule)
         {
@@ -29,6 +30,7 @@ namespace DreamTravelWebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpGet("{scheduleId}")]
         public IActionResult GetScheduleById(int scheduleId)
@@ -48,6 +50,7 @@ namespace DreamTravelWebAPI.Controllers
             }
         }
 
+
         [HttpGet("train/{trainId}")]
         public IActionResult GetSchedulesByTrainId(String trainId)
         {
@@ -61,6 +64,7 @@ namespace DreamTravelWebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpPut("{scheduleId}")]
         public IActionResult UpdateExistingTrainSchedule(int scheduleId, Schedule updatedSchedule)
@@ -80,6 +84,7 @@ namespace DreamTravelWebAPI.Controllers
             }
         }
 
+
         [HttpGet]
         public IActionResult GetAllSchedules()
         {
@@ -93,6 +98,7 @@ namespace DreamTravelWebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
 
         [HttpDelete("{scheduleId}")]
         public IActionResult CancelTrainReservation(int scheduleId)
