@@ -15,5 +15,6 @@ namespace DreamTravelWebAPI.Services
         Train CreateTrain(Train train);
         Train GetTrainById(string trainId);
         void DeactivateTrain(string trainId);
+        void ActiveTrain(String trainId);
     }
 }

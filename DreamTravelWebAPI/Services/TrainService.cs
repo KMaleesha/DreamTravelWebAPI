@@ -46,6 +46,18 @@ namespace DreamTravelWebAPI.Services
             Update(trainId, train);
         }
 
+        public void ActiveTrain(string trainId)
+        {
+            var train = GetById(trainId);
+            if (train == null)
+            {
+                throw new Exception("Train not found.");
+            }
+
+            train.IsPublished = true;
+            Update(trainId, train);
+        }
+
         public void Update(string id, Train trainIn)
         {
             _trains.ReplaceOne(train => train.Id == id, trainIn);
