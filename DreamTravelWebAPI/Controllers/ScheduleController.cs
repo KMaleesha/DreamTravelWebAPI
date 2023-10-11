@@ -117,5 +117,20 @@ namespace DreamTravelWebAPI.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("published-trains")]
+        public IActionResult GetSchedulesOfPublishedTrains()
+        {
+            try
+            {
+                var schedules = _scheduleService.GetSchedulesOfPublishedTrains();
+                return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

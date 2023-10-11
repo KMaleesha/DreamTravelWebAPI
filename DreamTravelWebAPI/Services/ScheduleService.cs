@@ -25,10 +25,11 @@ public class ScheduleService : IScheduleService
             throw new ArgumentException($"A schedule with the ID {schedule.Id} already exists.");
         }
 
-        var train = _trains.Find(t => t.Id == trainId && t.IsPublished).FirstOrDefault();
+        // Just check for the train's existence without caring about its publication status
+        var train = _trains.Find(t => t.Id == trainId).FirstOrDefault();
         if (train == null)
         {
-            throw new Exception("Train not found or not eligible for scheduling.");
+            throw new Exception("Train not found.");
         }
 
         if (string.IsNullOrEmpty(schedule.DepartureTime) ||
@@ -45,16 +46,6 @@ public class ScheduleService : IScheduleService
         return schedule;
     }
 
-    public Schedule GetScheduleById(int scheduleId)
-    {
-        return _schedules.Find(s => s.Id == scheduleId).FirstOrDefault();
-    }
-
-    public IEnumerable<Schedule> GetSchedulesByTrainId(String trainId)
-    {
-        return _schedules.Find(s => s.Train.Id == trainId).ToList();
-    }
-
     public bool UpdateExistingTrainSchedule(int scheduleId, Schedule updatedSchedule)
     {
         var existingSchedule = GetScheduleById(scheduleId);
@@ -63,10 +54,11 @@ public class ScheduleService : IScheduleService
             throw new Exception("Schedule not found.");
         }
 
-        var train = _trains.Find(t => t.Id == existingSchedule.Train.Id && t.IsPublished).FirstOrDefault();
+        // Just check for the train's existence without caring about its publication status
+        var train = _trains.Find(t => t.Id == existingSchedule.Train.Id).FirstOrDefault();
         if (train == null)
         {
-            throw new Exception("Train not found or not eligible for scheduling.");
+            throw new Exception("Train not found.");
         }
 
         updatedSchedule.Id = scheduleId;
@@ -74,6 +66,16 @@ public class ScheduleService : IScheduleService
 
         var result = _schedules.ReplaceOne(s => s.Id == scheduleId, updatedSchedule);
         return result.ModifiedCount > 0;
+    }
+
+    public Schedule GetScheduleById(int scheduleId)
+    {
+        return _schedules.Find(s => s.Id == scheduleId).FirstOrDefault();
+    }
+
+    public IEnumerable<Schedule> GetSchedulesByTrainId(String trainId)
+    {
+        return _schedules.Find(s => s.Train.Id == trainId).ToList();
     }
 
     public bool CancelTrainReservation(int scheduleId)
@@ -109,4 +111,10 @@ public class ScheduleService : IScheduleService
     {
         return _schedules.Find(_ => true).ToList();
     }
+
+    public IEnumerable<Schedule> GetSchedulesOfPublishedTrains()
+    {
+        return _schedules.Find(s => s.Train.IsPublished).ToList();
+    }
+
 }
