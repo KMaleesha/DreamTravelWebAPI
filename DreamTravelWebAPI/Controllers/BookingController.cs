@@ -3,6 +3,7 @@ using DreamTravelWebAPI.Models;
 using DreamTravelWebAPI.Services;
 using System;
 using Microsoft.AspNetCore.Authorization;
+using System.Linq;
 
 namespace DreamTravelWebAPI.Controllers
 {
@@ -33,6 +34,16 @@ namespace DreamTravelWebAPI.Controllers
             if (booking == null)
                 return NotFound("Booking not found");
             return Ok(booking);
+        }
+
+        // GET: api/Bookings/{nic}
+        [HttpGet("nic/{nic}")]
+        public IActionResult GetBookingByNic(string nic)
+        {
+            var bookings = _bookingService.GetByNIC(nic);
+            if (!bookings.Any())
+                return NotFound("Booking not found");
+            return Ok(bookings);
         }
 
         // POST: api/Bookings

@@ -20,6 +20,8 @@ namespace DreamTravelWebAPI.Services
         public List<Booking> GetAll() => _bookings.Find(booking => true).ToList();
 
         public Booking GetByBookingID(string bookingID) => _bookings.Find<Booking>(booking => booking.BookingID == bookingID).FirstOrDefault();
+        // public List<Booking> GetByNIC(string NIC) => _bookings.Find<Booking>(booking => booking.NIC == NIC).ToList();
+        public IEnumerable<Booking> GetByNIC(string NIC) => _bookings.Find<Booking>(booking => booking.NIC == NIC).ToList();
 
 
         public Booking Create(Booking booking)
