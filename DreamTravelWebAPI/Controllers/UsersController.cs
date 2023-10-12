@@ -69,8 +69,8 @@ namespace DreamTravelWebAPI.Controllers
             {
                 Subject = new ClaimsIdentity(new Claim[]
                 {
-                new Claim(ClaimTypes.Name, user.NIC),
-                new Claim(System.Security.Claims.ClaimTypes.Role, user.Role.ToString())
+            new Claim(ClaimTypes.Name, user.NIC),
+            new Claim(System.Security.Claims.ClaimTypes.Role, user.Role.ToString())
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
@@ -80,8 +80,9 @@ namespace DreamTravelWebAPI.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            return Ok(new { Token = tokenString });
+            return Ok(new { Token = tokenString, Role = user.Role.ToString() });
         }
+
 
         // Get user details
         [HttpGet("{nic}")]
