@@ -70,7 +70,7 @@ namespace DreamTravelWebAPI.Controllers
                 Subject = new ClaimsIdentity(new Claim[]
                 {
             new Claim(ClaimTypes.Name, user.NIC),
-            new Claim(System.Security.Claims.ClaimTypes.Role, user.Role.ToString())
+            new Claim(System.Security.Claims.ClaimTypes.Role, user.Role.ToString()) // This will still add the role as string in the token, which can be useful for authorization checks
                 }),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature),
@@ -80,8 +80,9 @@ namespace DreamTravelWebAPI.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
             var tokenString = tokenHandler.WriteToken(token);
 
-            return Ok(new { Token = tokenString, Role = user.Role.ToString() });
+            return Ok(new { Token = tokenString, Role = (int)user.Role }); // Casting the role to an integer
         }
+
 
 
         // Get user details
