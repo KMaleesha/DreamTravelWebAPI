@@ -1,4 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿// --------------------------------------------------------------
+// Project: DreamTravelWebAPI
+// Class: User
+// Author: Wijesooriya W.M.R.K
+// Created: 10/13/2023
+// Description: Model for users in the Dream Travel Web API
+// --------------------------------------------------------------
+
+using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Driver;

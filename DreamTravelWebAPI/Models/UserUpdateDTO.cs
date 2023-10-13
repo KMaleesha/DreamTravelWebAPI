@@ -1,4 +1,12 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿// --------------------------------------------------------------
+// Project: DreamTravelWebAPI
+// Class: UserUpdateDTO
+// Author: Wijesooriya W.M.R.K
+// Created: 10/13/2023
+// Description: Model for userupdate in the Dream Travel Web API
+// --------------------------------------------------------------
+
+using System.ComponentModel.DataAnnotations;
 
 namespace DreamTravelWebAPI.Models
 {
