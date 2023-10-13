@@ -1,4 +1,11 @@
-﻿using System;
+﻿// --------------------------------------------------------------
+// Project: DreamTravelWebAPI
+// Class: UsersController
+// Author: Wijesooriya W.M.R.K
+// Created: 10/13/2023
+// Description: Controller for managing users in the Dream Travel Web API
+// --------------------------------------------------------------
+using System;
 using System.Collections.Generic;
 using Microsoft.AspNetCore.Mvc;
 using DreamTravelWebAPI.Models;

@@ -1,4 +1,12 @@
-﻿using DreamTravelWebAPI.Models;
+﻿// --------------------------------------------------------------
+// Project: DreamTravelWebAPI
+// Class: TravelersController
+// Author: Wijesooriya W.M.R.K
+// Created: 10/13/2023
+// Description: Controller for managing travelers in the Dream Travel Web API
+// --------------------------------------------------------------
+
+using DreamTravelWebAPI.Models;
 using DreamTravelWebAPI.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -13,16 +21,18 @@ using Microsoft.Extensions.Configuration;
 
 namespace DreamTravelWebAPI.Controllers
 {
-
+    // Requires the user to be authenticated, except where explicitly overridden
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class TravelersController : ControllerBase
-    {
+    {   
         private readonly IUserService _userService;
         private readonly ITravelerService _travelerService;
         private readonly IConfiguration _config;
         private readonly JwtSettings _jwtSettings;
+
+        // Constructor
         public TravelersController(IUserService userService, ITravelerService travelerService, IConfiguration config, IOptions<JwtSettings> jwtSettings)
         {
             _userService = userService;
@@ -31,7 +41,7 @@ namespace DreamTravelWebAPI.Controllers
             _jwtSettings = jwtSettings.Value;
         }
 
-
+        // Allows anonymous access for registration
         [AllowAnonymous]
         [HttpPost("register")]
         public IActionResult Register([FromBody] Traveler traveler)
@@ -51,6 +61,7 @@ namespace DreamTravelWebAPI.Controllers
             return Ok("Traveler successfully registered");
         }
 
+        // Updates an existing traveler by NIC
         [HttpPut("{nic}")]
         public IActionResult UpdateTraveler(string nic, [FromBody] Traveler travelerUpdateParam)
         {
@@ -67,6 +78,7 @@ namespace DreamTravelWebAPI.Controllers
             return Ok("Traveler updated successfully");
         }
 
+        // Retrieves all travelers
         [HttpGet]
         public IActionResult GetAllTravelers()
         {
