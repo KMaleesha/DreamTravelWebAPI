@@ -1,21 +1,120 @@
-﻿using DreamTravelWebAPI.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using DreamTravelWebAPI;
+using DreamTravelWebAPI.Models;
+using MongoDB.Driver;
 
 public class ScheduleService : IScheduleService
 {
-    private static List<Schedule> schedules = new List<Schedule>();
+    private readonly IMongoCollection<Schedule> _schedules;
+    private readonly IMongoCollection<Train> _trains;
 
-    public Schedule Create(int trainId, Schedule schedule)
+    public ScheduleService(MongoDBSettings settings)
     {
-        schedule.TrainId = trainId;
-        schedules.Add(schedule);
+        var client = new MongoClient(settings.ConnectionString);
+        var database = client.GetDatabase(settings.DatabaseName);
+        _schedules = database.GetCollection<Schedule>("Schedules");
+        _trains = database.GetCollection<Train>("Trains");
+    }
+
+    public Schedule CreateScheduleWithTrainDetails(string trainId, Schedule schedule)
+    {
+        var existingSchedule = _schedules.Find(s => s.Id == schedule.Id).FirstOrDefault();
+        if (existingSchedule != null)
+        {
+            throw new ArgumentException($"A schedule with the ID {schedule.Id} already exists.");
+        }
+
+        // Just check for the train's existence without caring about its publication status
+        var train = _trains.Find(t => t.Id == trainId).FirstOrDefault();
+        if (train == null)
+        {
+            throw new Exception("Train not found.");
+        }
+
+        if (string.IsNullOrEmpty(schedule.DepartureTime) ||
+            string.IsNullOrEmpty(schedule.ArrivalTime) ||
+            string.IsNullOrEmpty(schedule.StartStation) ||
+            string.IsNullOrEmpty(schedule.StoppingStation) ||
+            schedule.Train == null)
+        {
+            throw new ArgumentException("All fields of the schedule must be provided.");
+        }
+
+        schedule.Train = train;
+        _schedules.InsertOne(schedule);
         return schedule;
     }
 
-    public IEnumerable<Schedule> GetByTrainId(int trainId)
+    public bool UpdateExistingTrainSchedule(int scheduleId, Schedule updatedSchedule)
     {
-        return schedules.Where(s => s.TrainId == trainId).ToList();
+        var existingSchedule = GetScheduleById(scheduleId);
+        if (existingSchedule == null)
+        {
+            throw new Exception("Schedule not found.");
+        }
+
+        // Just check for the train's existence without caring about its publication status
+        var train = _trains.Find(t => t.Id == existingSchedule.Train.Id).FirstOrDefault();
+        if (train == null)
+        {
+            throw new Exception("Train not found.");
+        }
+
+        updatedSchedule.Id = scheduleId;
+        updatedSchedule.Train = train;
+
+        var result = _schedules.ReplaceOne(s => s.Id == scheduleId, updatedSchedule);
+        return result.ModifiedCount > 0;
     }
+
+    public Schedule GetScheduleById(int scheduleId)
+    {
+        return _schedules.Find(s => s.Id == scheduleId).FirstOrDefault();
+    }
+
+    public IEnumerable<Schedule> GetSchedulesByTrainId(String trainId)
+    {
+        return _schedules.Find(s => s.Train.Id == trainId).ToList();
+    }
+
+    public bool CancelTrainReservation(int scheduleId)
+    {
+        var schedule = GetScheduleById(scheduleId);
+        if (schedule == null)
+        {
+            throw new Exception("Schedule not found.");
+        }
+
+        if (HasExistingReservations(schedule))
+        {
+            throw new Exception("Cannot cancel a train with existing reservations.");
+        }
+
+        // Implement your cancellation logic here
+        // ...
+
+        return true; 
+    }
+
+    // Helper method to check for existing reservations
+    private bool HasExistingReservations(Schedule schedule)
+    {
+        // Implement your logic to check for existing reservations
+        // Return true if there are reservations, false otherwise
+        // ...
+
+        return false; // Placeholder
+    }
+
+    public IEnumerable<Schedule> GetAllSchedules()
+    {
+        return _schedules.Find(_ => true).ToList();
+    }
+
+    public IEnumerable<Schedule> GetSchedulesOfPublishedTrains()
+    {
+        return _schedules.Find(s => s.Train.IsPublished).ToList();
+    }
+
 }

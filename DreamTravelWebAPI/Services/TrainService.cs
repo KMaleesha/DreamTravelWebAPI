@@ -1,65 +1,85 @@
-﻿using DreamTravelWebAPI.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using MongoDB.Driver;
+using DreamTravelWebAPI.Models;
 
-public class TrainService : ITrainService
+namespace DreamTravelWebAPI.Services
 {
-    private static List<Train> trains = new List<Train>();
-
-    public Train Create(Train train)
+    public class TrainService : ITrainService
     {
-        trains.Add(train);
-        return train;
-    }
+        private readonly IMongoCollection<Train> _trains;
+        private readonly IBookingService _bookingService;
 
-    public Train Update(int id, Train updatedTrain)
-    {
-        var train = trains.FirstOrDefault(t => t.Id == id);
-        if (train == null)
+        public TrainService(MongoDBSettings settings, IBookingService bookingService)
         {
-            throw new Exception($"Train with id {id} not found.");
+            var client = new MongoClient(settings.ConnectionString);
+            var database = client.GetDatabase(settings.DatabaseName);
+            _trains = database.GetCollection<Train>("Trains");
+            _bookingService = bookingService;
         }
+        public bool Exists(string id) => _trains.CountDocuments(train => train.Id == id) > 0;
 
-        if (!train.IsPublished)
+        public List<Train> GetAll() => _trains.Find(train => true).ToList();
+
+        public Train GetById(string id) => _trains.Find<Train>(train => train.Id == id).FirstOrDefault();
+
+        public Train Create(Train train)
         {
-            train.Name = updatedTrain.Name;
+            if (Exists(train.Id))
+            {
+                throw new InvalidOperationException("A train with the same ID already exists.");
+            }
+
+            _trains.InsertOne(train);
             return train;
         }
 
-        throw new Exception("Cannot update a published train.");
-    }
-
-    public bool Delete(int id)
-    {
-        var train = trains.FirstOrDefault(t => t.Id == id);
-        if (train == null)
+        public void DeactivateTrain(string trainId)
         {
-            throw new Exception($"Train with id {id} not found.");
+            var reservations = _bookingService.GetBookingsForTrain(trainId);
+            if (reservations.Count > 0)
+            {
+                throw new InvalidOperationException("Cannot deactivate the train as there are active reservations.");
+            }
+
+            var train = GetById(trainId);
+            if (train == null)
+            {
+                throw new Exception("Train not found.");
+            }
+
+            train.IsPublished = false;
+            Update(trainId, train);
         }
 
-        if (!train.IsPublished)
+        public void ActiveTrain(string trainId)
         {
-            trains.Remove(train);
-            return true;
+            var train = GetById(trainId);
+            if (train == null)
+            {
+                throw new Exception("Train not found.");
+            }
+
+            train.IsPublished = true;
+            Update(trainId, train);
         }
 
-        throw new Exception("Cannot delete a train with reservations or if it's published.");
-    }
-
-    public IEnumerable<Train> GetAll()
-    {
-        return trains;
-    }
-
-    public Train GetById(int id)
-    {
-        var train = trains.FirstOrDefault(t => t.Id == id);
-        if (train == null)
+        public void Update(string id, Train trainIn)
         {
-            throw new Exception($"Train with id {id} not found.");
+            _trains.ReplaceOne(train => train.Id == id, trainIn);
         }
 
-        return train;
+        public void Delete(string id) => _trains.DeleteOne(train => train.Id == id);
+
+        public List<Train> GetByIsPublished(bool isPublished)
+        {
+            return _trains.Find(train => train.IsPublished == isPublished).ToList();
+        }
+
+        public Train GetTrainById(string trainId)
+        {
+            var filter = Builders<Train>.Filter.Eq(train => train.Id, trainId);
+            return _trains.Find(filter).FirstOrDefault();
+        }
     }
 }

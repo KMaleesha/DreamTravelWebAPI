@@ -1,30 +1,136 @@
 ﻿using DreamTravelWebAPI.Models;
 using Microsoft.AspNetCore.Mvc;
+using System;
 using System.Collections.Generic;
 
-[Route("api/trains/{trainId}/[controller]")]
-[ApiController]
-public class SchedulesController : ControllerBase
+namespace DreamTravelWebAPI.Controllers
 {
-    private readonly IScheduleService _scheduleService;
-
-    public SchedulesController(IScheduleService scheduleService)
+    [Route("api/schedules")]
+    [ApiController]
+    public class SchedulesController : ControllerBase
     {
-        _scheduleService = scheduleService;
-    }
+        private readonly IScheduleService _scheduleService;
 
-    [HttpGet]
-    public IActionResult GetAllByTrainId(int trainId)
-    {
-        var schedules = _scheduleService.GetByTrainId(trainId);
-        return Ok(schedules);
-    }
+        public SchedulesController(IScheduleService scheduleService)
+        {
+            _scheduleService = scheduleService;
+        }
 
-    [HttpPost]
-    public IActionResult Create(int trainId, Schedule schedule)
-    {
-        var newSchedule = _scheduleService.Create(trainId, schedule);
-        return Ok(newSchedule);
+
+        [HttpPost("{trainId}")]
+        public IActionResult CreateScheduleWithTrainDetails(string trainId, [FromBody] Schedule schedule)
+        {
+            try
+            {
+                var createdSchedule = _scheduleService.CreateScheduleWithTrainDetails(trainId, schedule);
+                return CreatedAtAction(nameof(GetScheduleById), new { scheduleId = createdSchedule.Id }, createdSchedule);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpGet("{scheduleId}")]
+        public IActionResult GetScheduleById(int scheduleId)
+        {
+            try
+            {
+                var schedule = _scheduleService.GetScheduleById(scheduleId);
+                if (schedule == null)
+                {
+                    return NotFound("Schedule not found.");
+                }
+                return Ok(schedule);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpGet("train/{trainId}")]
+        public IActionResult GetSchedulesByTrainId(String trainId)
+        {
+            try
+            {
+                var schedules = _scheduleService.GetSchedulesByTrainId(trainId);
+                return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpPut("{scheduleId}")]
+        public IActionResult UpdateExistingTrainSchedule(int scheduleId, Schedule updatedSchedule)
+        {
+            try
+            {
+                var isUpdated = _scheduleService.UpdateExistingTrainSchedule(scheduleId, updatedSchedule);
+                if (!isUpdated)
+                {
+                    return NotFound("Schedule not found or update failed.");
+                }
+                return Ok("Schedule updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpGet]
+        public IActionResult GetAllSchedules()
+        {
+            try
+            {
+                var schedules = _scheduleService.GetAllSchedules();
+                return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+
+        [HttpDelete("{scheduleId}")]
+        public IActionResult CancelTrainReservation(int scheduleId)
+        {
+            try
+            {
+                var isCancelled = _scheduleService.CancelTrainReservation(scheduleId);
+                if (!isCancelled)
+                {
+                    return NotFound("Schedule not found or cancellation failed.");
+                }
+                return Ok("Train reservation cancelled successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("published-trains")]
+        public IActionResult GetSchedulesOfPublishedTrains()
+        {
+            try
+            {
+                var schedules = _scheduleService.GetSchedulesOfPublishedTrains();
+                return Ok(schedules);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
-    // Additional CRUD methods for schedules can be added...
 }
