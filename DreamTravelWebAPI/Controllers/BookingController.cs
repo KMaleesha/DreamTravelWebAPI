@@ -1,4 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿// --------------------------------------------------------------
+// Project: DreamTravelWebAPI
+// Class: BookingsController
+// Author: Wijesooriya W.M.R.K
+// Created: 10/13/2023
+// Description: Controller for managing bookings in the Dream Travel Web API
+// --------------------------------------------------------------
+
+using Microsoft.AspNetCore.Mvc;
 using DreamTravelWebAPI.Models;
 using DreamTravelWebAPI.Services;
 using System;
@@ -7,6 +15,7 @@ using System.Linq;
 
 namespace DreamTravelWebAPI.Controllers
 {
+    // Requires the user to be authenticated
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
@@ -14,19 +23,20 @@ namespace DreamTravelWebAPI.Controllers
     {
         private readonly IBookingService _bookingService;
 
+        // Constructor
         public BookingsController(IBookingService bookingService)
         {
             _bookingService = bookingService;
         }
 
-        // GET: api/Bookings
+        // Retrieves all bookings
         [HttpGet]
         public IActionResult GetAllBookings()
         {
             return Ok(_bookingService.GetAll());
         }
 
-        // GET: api/Bookings/{bookingID}
+        // Retrieves a specific booking by bookingID
         [HttpGet("{bookingID}")]
         public IActionResult GetBooking(string bookingID)
         {
@@ -36,7 +46,7 @@ namespace DreamTravelWebAPI.Controllers
             return Ok(booking);
         }
 
-        // GET: api/Bookings/{nic}
+        // Retrieves bookings by NIC
         [HttpGet("nic/{nic}")]
         public IActionResult GetBookingByNic(string nic)
         {
@@ -46,7 +56,7 @@ namespace DreamTravelWebAPI.Controllers
             return Ok(bookings);
         }
 
-        // POST: api/Bookings
+        // Creates a new booking
         [HttpPost]
         public IActionResult CreateBooking([FromBody] Booking booking)
         {
@@ -57,7 +67,7 @@ namespace DreamTravelWebAPI.Controllers
             return Ok("Booking created successfully");
         }
 
-        // PUT: api/Bookings/{bookingID}
+        // Updates an existing booking by bookingID
         [HttpPut("{bookingID}")]
         public IActionResult UpdateBooking(string bookingID, [FromBody] Booking updatedBooking)
         {
@@ -69,7 +79,7 @@ namespace DreamTravelWebAPI.Controllers
             return Ok("Booking updated successfully");
         }
 
-        // PATCH: api/Bookings/{bookingID}/status
+        // Updates the status of an existing booking
         [HttpPatch("{bookingID}/status")]
         public IActionResult UpdateBookingStatus(string bookingID, [FromBody] BookingStatusUpdateDTO statusUpdate)
         {
@@ -84,8 +94,7 @@ namespace DreamTravelWebAPI.Controllers
             }
         }
 
-
-        // DELETE: api/Bookings/{bookingID}
+        // Deletes an existing booking by bookingID
         [HttpDelete("{bookingID}")]
         public IActionResult DeleteBooking(string bookingID)
         {

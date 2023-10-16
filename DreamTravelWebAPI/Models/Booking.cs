@@ -1,4 +1,11 @@
-﻿using MongoDB.Bson;
+﻿// --------------------------------------------------------------
+// Project: DreamTravelWebAPI
+// Class: Booking
+// Author: Wijesooriya W.M.R.K
+// Created: 10/13/2023
+// Description: Model for bookings in the Dream Travel Web API
+// --------------------------------------------------------------
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System;
 
@@ -22,7 +29,6 @@ namespace DreamTravelWebAPI.Models
         {
             Reserved,
             Canceled
-            // ... any other statuses you might have
         }
         [BsonElement("Status")]
         [System.ComponentModel.Description("Status of the booking. Either 'Reserved' or 'Canceled'.")]

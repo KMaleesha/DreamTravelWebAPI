@@ -1,3 +1,11 @@
+// --------------------------------------------------------------
+// Project: DreamTravelWebAPI
+// Class: BookingsController
+// Author: Wijesooriya W.M.R.K
+// Created: 10/13/2023
+// Description: Controller for managing bookings in the Dream Travel Web API
+// --------------------------------------------------------------
+
 using DreamTravelWebAPI;
 using DreamTravelWebAPI.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,7 +45,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -70,7 +78,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseCors(); // Use the CORS middleware here
 
-app.UseAuthentication();  // Add this line
+app.UseAuthentication();  
 app.UseAuthorization();
 
 app.MapControllers();
