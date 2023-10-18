@@ -1,93 +1,141 @@
-﻿using System; // Namespace for fundamental classes and base classes that define commonly-used value and reference data types.
-using DreamTravelWebAPI.Models; // Namespace containing the models used by the application.
-using DreamTravelWebAPI.Services; // Namespace containing the services used by the application.
-using Microsoft.AspNetCore.Mvc; // Namespace for ASP.NET Core MVC framework.
+﻿using System;  // Added this line
+using DreamTravelWebAPI.Models;
+using DreamTravelWebAPI.Services;
+using Microsoft.AspNetCore.Mvc;
 
-[Route("api/[controller]")] // Attribute-based routing. Maps to this controller when the URL matches "api/Trains".
-[ApiController] // Attribute indicating this class is an API controller.
+[Route("api/[controller]")]
+[ApiController]
 public class TrainsController : ControllerBase
 {
-    private readonly ITrainService _trainService; // Dependency Injection for the train service.
+    private readonly ITrainService _trainService;
 
-    // Constructor: Initializes a new instance of the TrainsController class.
     public TrainsController(ITrainService trainService)
     {
-        _trainService = trainService; // Assigns the injected train service to the private variable.
+        _trainService = trainService;
     }
 
-    [HttpPost] // Marks this method as a POST endpoint.
+    [HttpPost]
     public IActionResult Create(Train train)
     {
         try
         {
-            // Validation for train details.
             if (string.IsNullOrEmpty(train.Id) || string.IsNullOrEmpty(train.Name))
             {
                 return BadRequest("All fields are required.");
             }
 
-            // Calls the Create method from the service and saves the train.
             var result = _trainService.Create(train);
             return Ok("Successfully Created.");
         }
         catch (Exception ex)
         {
-            // Returns a 500 Internal Server Error response with the exception details.
             return StatusCode(500, new { error = "Cannot create successful.", details = ex.Message });
         }
     }
 
-    [HttpPut("{id}")] // Marks this method as a PUT endpoint.
+
+    [HttpPut("{id}")]
     public IActionResult Update(String id, Train updatedTrain)
     {
         try
         {
-            // Calls the Update method from the service to update the train details.
             _trainService.Update(id, updatedTrain);
             return Ok("Successfully Updated.");
         }
         catch (Exception ex)
         {
-            // Returns a 500 Internal Server Error response with the exception details.
             return StatusCode(500, new { error = "Update train by ID was unsuccessful.", details = ex.Message });
         }
     }
 
-    // ... (The rest of the methods follow similar patterns)
+    [HttpDelete("{id}")]
+    public IActionResult Delete(string id)
+    {
+        try
+        {
+            _trainService.Delete(id);
+            return Ok("Successfully Deleted.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Cannot Delete the record.", details = ex.Message });
+        }
+    }
 
-    [HttpPatch("{trainId}/activate")] // Marks this method as a PATCH endpoint for train activation.
+
+    [HttpGet]
+    public IActionResult GetAll()
+    {
+        try
+        {
+            var result = _trainService.GetAll();
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Fetching trains were unsuccessful.", details = ex.Message });
+        }
+    }
+
+    [HttpGet("published/{status}")]
+    public IActionResult GetByIsPublished(bool status)
+    {
+        try
+        {
+            var result = _trainService.GetByIsPublished(status);
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Fetching train by published status was unsuccessful.", details = ex.Message });
+        }
+    }
+
+    [HttpPatch("{id}/deactivate")]
+    public IActionResult DeactivateTrain(string id)
+    {
+        try
+        {
+            _trainService.DeactivateTrain(id);
+            return Ok("Train de-activated successfully.");
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { error = "Train de-activation was unsuccessful.", details = ex.Message });
+        }
+    }
+
+
+    [HttpPatch("{trainId}/activate")]
     public IActionResult Activate(string trainId)
     {
         try
         {
-            // Calls the service method to activate the specified train.
             _trainService.ActiveTrain(trainId);
             return Ok("Train activated successfully.");
         }
         catch (Exception ex)
         {
-            // Returns a 500 Internal Server Error response with the exception details.
             return StatusCode(500, new { error = "Train activation was unsuccessful.", details = ex.Message });
         }
     }
 
-    [HttpGet("{id}")] // Marks this method as a GET endpoint to retrieve a train by its ID.
-    public IActionResult GetById(String id)
+[HttpGet("{id}")]
+public IActionResult GetById(String id)
+{
+    try
     {
-        try
+        var result = _trainService.GetById(id);
+        if (result == null)
         {
-            var result = _trainService.GetById(id);
-            if (result == null)
-            {
-                // If the train is not found, a 404 Not Found response is returned.
-                return NotFound(new { message = "Train not found." });
-            }
-            return Ok(result);
+            return NotFound(new { message = "Train not found." });
         }
-        catch (Exception ex)
-        {
-            // Returns a 500 Internal Server Error response with the exception details.
-            return StatusCode(500, new { error = "Fetching train by ID was unsuccessful.", details = ex.Message });
-        }
+        return Ok(result);
     }
+    catch (Exception ex)
+    {
+        return StatusCode(500, new { error = "Fetching train by ID was unsuccessful.", details = ex.Message });
+    }
+}
+
 }
